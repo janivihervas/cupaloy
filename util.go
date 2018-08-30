@@ -3,7 +3,6 @@ package cupaloy
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -97,18 +96,8 @@ func (c *Config) updateSnapshot(snapshotName string, snapshot string) error {
 
 	snapshotFile := c.snapshotFilePath(snapshotName)
 	_, err = os.Stat(snapshotFile)
-	isNewSnapshot := os.IsNotExist(err)
 
-	err = ioutil.WriteFile(snapshotFile, []byte(snapshot), os.FileMode(0644))
-	if err != nil {
-		return err
-	}
-
-	if isNewSnapshot {
-		return fmt.Errorf("snapshot created for test %s", snapshotName)
-	}
-
-	return fmt.Errorf("snapshot updated for test %s", snapshotName)
+	return ioutil.WriteFile(snapshotFile, []byte(snapshot), os.FileMode(0644))
 }
 
 func diffSnapshots(previous, current string) string {

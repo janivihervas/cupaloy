@@ -56,11 +56,8 @@ func TestUpdate(t *testing.T) {
 	}
 
 	err = snapshotter.Snapshot("Hello new world")
-	if err == nil {
-		t.Fatalf("Updating a snapshot with a new value is always an error %s", err)
-	}
-	if err.Error() != "snapshot updated for test examples_test-TestUpdate" {
-		t.Fatalf("Error returned will say that snapshot was updated")
+	if err != nil {
+		t.Fatalf("Updating a snapshot should not fail %s", err)
 	}
 
 	snapshotter.Snapshot("Hello world") // reset snapshot to known state
@@ -78,11 +75,8 @@ func TestMissingSnapshot(t *testing.T) {
 		cupaloy.SnapshotSubdirectory(tempdir))
 
 	err = snapshotter.Snapshot("Hello world")
-	if err == nil {
-		t.Fatalf("This will always return an error %s", err)
-	}
-	if err.Error() != "snapshot created for test examples_test-TestMissingSnapshot" {
-		t.Fatalf("Error returned will say that snapshot was created %s", err)
+	if err != nil {
+		t.Fatalf("Creating a missing snapshot failed %s", err)
 	}
 }
 
@@ -114,8 +108,7 @@ func TestShouldUpdate(t *testing.T) {
 		result := "Hello!"
 		c := cupaloy.New(cupaloy.ShouldUpdate(func() bool { return true }))
 		err := c.Snapshot(result)
-		if err == nil || !strings.Contains(err.Error(), "updated") {
-			// snapshot should have been updated with error signalling this
+		if err != nil {
 			t.Fatal(err)
 		}
 
